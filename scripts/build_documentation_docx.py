@@ -1,4 +1,4 @@
-"""Convert Markdown documentation files to Word (.docx) in documentation/."""
+"""Build Live_Seller_Churn_Analysis_Documentation.docx from documentation_source.md."""
 import re
 import sys
 from pathlib import Path
@@ -9,15 +9,8 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT_DIR = ROOT / "documentation"
-
-DOCS = [
-    (ROOT / "README.md", OUT_DIR / "Live_Seller_Churn_Analysis_Documentation.docx"),
-    (
-        OUT_DIR / "churn_dashboard_guide.md",
-        OUT_DIR / "Live_Seller_Churn_Dashboard_Guide.docx",
-    ),
-]
+SOURCE = ROOT / "documentation" / "documentation_source.md"
+OUT = ROOT / "documentation" / "Live_Seller_Churn_Analysis_Documentation.docx"
 
 
 def set_cell_shading(cell, fill_hex):
@@ -27,7 +20,7 @@ def set_cell_shading(cell, fill_hex):
     cell._tc.get_or_add_tcPr().append(shading)
 
 
-def add_formatted_paragraph(doc, text, style=None, bold=False, monospace=False):
+def add_formatted_paragraph(doc, text, style=None, bold=False):
     p = doc.add_paragraph(style=style)
     if not text:
         return p
@@ -45,9 +38,6 @@ def add_formatted_paragraph(doc, text, style=None, bold=False, monospace=False):
             run = p.add_run(cleaned)
             if bold:
                 run.bold = True
-            if monospace:
-                run.font.name = "Courier New"
-                run.font.size = Pt(9)
     return p
 
 
@@ -85,13 +75,10 @@ def add_table(doc, rows):
 
 
 def convert(md_path: Path, out_path: Path):
-    text = md_path.read_text(encoding="utf-8")
-    lines = text.splitlines()
-
+    lines = md_path.read_text(encoding="utf-8").splitlines()
     doc = Document()
-    normal = doc.styles["Normal"]
-    normal.font.name = "Calibri"
-    normal.font.size = Pt(11)
+    doc.styles["Normal"].font.name = "Calibri"
+    doc.styles["Normal"].font.size = Pt(11)
 
     i = 0
     in_code = False
@@ -104,14 +91,11 @@ def convert(md_path: Path, out_path: Path):
 
         if stripped.startswith("```"):
             if in_code:
-                block = "\n".join(code_lines)
                 p = doc.add_paragraph()
-                run = p.add_run(block)
+                run = p.add_run("\n".join(code_lines))
                 run.font.name = "Courier New"
                 run.font.size = Pt(9)
                 p.paragraph_format.left_indent = Pt(12)
-                p.paragraph_format.space_before = Pt(6)
-                p.paragraph_format.space_after = Pt(6)
                 code_lines = []
                 in_code = False
             else:
@@ -147,16 +131,11 @@ def convert(md_path: Path, out_path: Path):
             doc.add_heading(stripped[3:], level=1)
         elif stripped.startswith("# "):
             doc.add_heading(stripped[2:], level=0)
-        elif stripped.startswith("> "):
-            add_formatted_paragraph(doc, stripped[2:], style="Intense Quote")
         elif stripped.startswith("- "):
             add_formatted_paragraph(doc, stripped[2:], style="List Bullet")
         elif re.match(r"^\d+\.\s", stripped):
-            content = re.sub(r"^\d+\.\s", "", stripped)
-            add_formatted_paragraph(doc, content, style="List Number")
-        elif stripped == "":
-            pass
-        else:
+            add_formatted_paragraph(doc, re.sub(r"^\d+\.\s", "", stripped), style="List Number")
+        elif stripped:
             add_formatted_paragraph(doc, stripped)
 
         i += 1
@@ -170,13 +149,9 @@ def convert(md_path: Path, out_path: Path):
 
 
 def main():
-    targets = DOCS
-    if len(sys.argv) > 1:
-        md = Path(sys.argv[1])
-        out = Path(sys.argv[2]) if len(sys.argv) > 2 else OUT_DIR / (md.stem + ".docx")
-        targets = [(md, out)]
-    for md_path, out_path in targets:
-        convert(md_path, out_path)
+    src = Path(sys.argv[1]) if len(sys.argv) > 1 else SOURCE
+    out = Path(sys.argv[2]) if len(sys.argv) > 2 else OUT
+    convert(src, out)
 
 
 if __name__ == "__main__":

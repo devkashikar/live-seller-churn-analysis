@@ -1,27 +1,20 @@
-Live Seller Churn Analysis — Documentation Folder
+Live Seller Churn Analysis — Documentation
 
-WORD DOCUMENTS (for users without Markdown viewers):
+WORD DOCUMENT (full documentation, including churn definitions):
 
-  1. Live_Seller_Churn_Dashboard_Guide.docx
-     ★ START HERE for the dashboard
-     Complete guide to every section of the churn dashboard:
-     summary cards, heatmap, line chart, filters, cohorts, churn formulas,
-     compute() logic, data files, and maintenance.
+  Live_Seller_Churn_Analysis_Documentation.docx
 
-  2. Live_Seller_Churn_Analysis_Documentation.docx
-     Repository overview (same content as root README.md):
-     project layout, file roles, data pipeline, quick reference.
+  Start with section "How churn is calculated" for metric definitions.
 
-MARKDOWN SOURCES (for developers):
+MARKDOWN SOURCE:
 
-  churn_dashboard_guide.md  — source for dashboard Word guide
-  (root README.md)          — source for repository Word doc
+  documentation_source.md
 
-REGENERATE WORD FILES after editing markdown:
+REGENERATE after edits:
 
   python scripts/build_documentation_docx.py
 
-OPEN THE DASHBOARD:
+DASHBOARD:
 
   dashboard/live_seller_churn_dashboard_20260618.html
 
