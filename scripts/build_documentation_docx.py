@@ -1,17 +1,23 @@
-"""Convert README.md to Word document in documentation/."""
+"""Convert Markdown documentation files to Word (.docx) in documentation/."""
 import re
+import sys
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_LINE_SPACING
-from docx.shared import Pt, RGBColor
+from docx.shared import Pt
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 ROOT = Path(__file__).resolve().parent.parent
-README = ROOT / "README.md"
 OUT_DIR = ROOT / "documentation"
-OUT_DOCX = OUT_DIR / "Live_Seller_Churn_Analysis_Documentation.docx"
+
+DOCS = [
+    (ROOT / "README.md", OUT_DIR / "Live_Seller_Churn_Analysis_Documentation.docx"),
+    (
+        OUT_DIR / "churn_dashboard_guide.md",
+        OUT_DIR / "Live_Seller_Churn_Dashboard_Guide.docx",
+    ),
+]
 
 
 def set_cell_shading(cell, fill_hex):
@@ -25,7 +31,6 @@ def add_formatted_paragraph(doc, text, style=None, bold=False, monospace=False):
     p = doc.add_paragraph(style=style)
     if not text:
         return p
-    # parse **bold** and `code` inline
     parts = re.split(r"(\*\*[^*]+\*\*|`[^`]+`)", text)
     for part in parts:
         if part.startswith("**") and part.endswith("**"):
@@ -36,7 +41,6 @@ def add_formatted_paragraph(doc, text, style=None, bold=False, monospace=False):
             run.font.name = "Courier New"
             run.font.size = Pt(9)
         else:
-            # strip markdown links [text](url) -> text (url)
             cleaned = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1 (\2)", part)
             run = p.add_run(cleaned)
             if bold:
@@ -53,8 +57,7 @@ def is_table_row(line):
 
 
 def parse_table_row(line):
-    cells = [c.strip() for c in line.strip().strip("|").split("|")]
-    return cells
+    return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
 def is_separator_row(cells):
@@ -81,8 +84,8 @@ def add_table(doc, rows):
     doc.add_paragraph()
 
 
-def convert():
-    text = README.read_text(encoding="utf-8")
+def convert(md_path: Path, out_path: Path):
+    text = md_path.read_text(encoding="utf-8")
     lines = text.splitlines()
 
     doc = Document()
@@ -161,10 +164,20 @@ def convert():
     if table_buffer:
         add_table(doc, table_buffer)
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    doc.save(OUT_DOCX)
-    print(f"wrote {OUT_DOCX}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(out_path)
+    print(f"wrote {out_path}")
+
+
+def main():
+    targets = DOCS
+    if len(sys.argv) > 1:
+        md = Path(sys.argv[1])
+        out = Path(sys.argv[2]) if len(sys.argv) > 2 else OUT_DIR / (md.stem + ".docx")
+        targets = [(md, out)]
+    for md_path, out_path in targets:
+        convert(md_path, out_path)
 
 
 if __name__ == "__main__":
-    convert()
+    main()

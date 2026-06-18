@@ -4,7 +4,7 @@ Interactive dashboard and data pipeline for **eBay Live seller churn** in 2026.
 
 **Open the dashboard:** [`dashboard/live_seller_churn_dashboard_20260618.html`](dashboard/live_seller_churn_dashboard_20260618.html)  
 **Repository:** [github.com/devkashikar/live-seller-churn-analysis](https://github.com/devkashikar/live-seller-churn-analysis)  
-**Word documentation:** [`documentation/Live_Seller_Churn_Analysis_Documentation.docx`](documentation/Live_Seller_Churn_Analysis_Documentation.docx) (same content as this README)
+**Word documentation:** [`documentation/Live_Seller_Churn_Dashboard_Guide.docx`](documentation/Live_Seller_Churn_Dashboard_Guide.docx) (full dashboard guide) · [`documentation/Live_Seller_Churn_Analysis_Documentation.docx`](documentation/Live_Seller_Churn_Analysis_Documentation.docx) (repo overview)
 
 ---
 
@@ -65,8 +65,10 @@ flowchart LR
 live-seller-churn-analysis/
 ├── README.md
 ├── documentation/
-│   ├── Live_Seller_Churn_Analysis_Documentation.docx   # Word copy of this README
-│   └── README.txt                                      # Pointer for Word users
+│   ├── Live_Seller_Churn_Dashboard_Guide.docx          # ★ Dashboard guide (Word)
+│   ├── Live_Seller_Churn_Analysis_Documentation.docx # Repo overview (Word)
+│   ├── churn_dashboard_guide.md                      # Dashboard guide source
+│   └── README.txt                                    # Pointer for documentation folder
 ├── data/
 │   ├── raw/
 │   │   └── streams_first_stream_2026.csv      # INPUT: source extract
