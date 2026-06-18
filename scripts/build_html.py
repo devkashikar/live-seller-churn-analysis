@@ -1,6 +1,11 @@
 import json
+from pathlib import Path
 
-with open("_canvas_data.json", "r", encoding="utf-8") as f:
+ROOT = Path(__file__).resolve().parent.parent
+DATA_JSON = ROOT / "data" / "processed" / "canvas_data.json"
+OUT_HTML = ROOT / "dashboard" / "cohort_retention_dashboard.html"
+
+with open(DATA_JSON, "r", encoding="utf-8") as f:
     data_js = f.read()
 
 HTML = r"""<!DOCTYPE html>
@@ -382,6 +387,6 @@ refresh();
 """
 
 out = HTML.replace("/*__DATA__*/", data_js)
-with open("cohort_retention_dashboard.html", "w", encoding="utf-8") as f:
+with open(OUT_HTML, "w", encoding="utf-8") as f:
     f.write(out)
-print("wrote cohort_retention_dashboard.html", len(out), "bytes")
+print("wrote", OUT_HTML, len(out), "bytes")

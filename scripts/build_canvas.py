@@ -1,6 +1,9 @@
-import csv, json, collections, os
+import csv, json, collections
+from pathlib import Path
 
-CSV = "streams_first_stream_2026.csv"
+ROOT = Path(__file__).resolve().parent.parent
+CSV = ROOT / "data" / "raw" / "streams_first_stream_2026.csv"
+OUT = ROOT / "data" / "processed" / "canvas_data.json"
 
 countries, tiers, orgs, verticals = [], [], [], []
 ci, ti, oi, vi = {}, {}, {}, {}
@@ -72,6 +75,7 @@ for c in sorted(cohort_members):
 print("TOTAL onboarded:", onboard, "active(last):", active, "churned:", onboard - active,
       "retention:", round(100 * active / onboard, 1), "%")
 
-with open("_canvas_data.json", "w", encoding="utf-8") as f:
+OUT.parent.mkdir(parents=True, exist_ok=True)
+with open(OUT, "w", encoding="utf-8") as f:
     f.write(js)
-print("wrote _canvas_data.json")
+print("wrote", OUT)
