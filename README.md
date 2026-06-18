@@ -3,7 +3,8 @@
 Interactive dashboard and data pipeline for **eBay Live seller churn** in 2026.
 
 **Open the dashboard:** [`dashboard/live_seller_churn_dashboard_20260618.html`](dashboard/live_seller_churn_dashboard_20260618.html)  
-**Repository:** [github.com/devkashikar/live-seller-churn-analysis](https://github.com/devkashikar/live-seller-churn-analysis)
+**Repository:** [github.com/devkashikar/live-seller-churn-analysis](https://github.com/devkashikar/live-seller-churn-analysis)  
+**Word documentation:** [`documentation/Live_Seller_Churn_Analysis_Documentation.docx`](documentation/Live_Seller_Churn_Analysis_Documentation.docx) (same content as this README)
 
 ---
 
@@ -63,6 +64,9 @@ flowchart LR
 ```
 live-seller-churn-analysis/
 ├── README.md
+├── documentation/
+│   ├── Live_Seller_Churn_Analysis_Documentation.docx   # Word copy of this README
+│   └── README.txt                                      # Pointer for Word users
 ├── data/
 │   ├── raw/
 │   │   └── streams_first_stream_2026.csv      # INPUT: source extract
@@ -73,7 +77,8 @@ live-seller-churn-analysis/
 │   └── live_seller_churn_dashboard_20260617.html   # Older UI (outdated card logic)
 ├── scripts/
 │   ├── build_canvas.py                        # CSV → JSON (no churn)
-│   └── build_html.py                          # Legacy dashboard builder
+│   ├── build_html.py                          # Legacy dashboard builder
+│   └── build_documentation_docx.py            # README.md → Word doc
 └── tools/
     ├── check.js                               # Dashboard JS mirror for tests
     └── harness.js                             # Runs compute() smoke test
@@ -404,6 +409,8 @@ When new stream data arrives:
 4. Open dashboard — verify total sellers and summary card denominators
 5. If churn **logic** changed, edit **`compute()`** in the HTML (and sync `tools/check.js` if you use harness)
 6. Commit and push
+
+To refresh the Word documentation after README edits: `python scripts/build_documentation_docx.py`
 
 ---
 
